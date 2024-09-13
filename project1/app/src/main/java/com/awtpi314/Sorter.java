@@ -9,6 +9,10 @@ public class Sorter {
     SINGLE, DUAL
   }
 
+  public enum SortType {
+    INSERTION, QUICK
+  }
+
   public void insertionSort(int[] unsorted) {
     Integer arrayLength = unsorted.length;
     for (Integer i = 1; i < arrayLength; i++) {
