@@ -1,13 +1,6 @@
 package com.awtpi314;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import com.awtpi314.Sorter.PartitionType;
-import com.awtpi314.Sorter.PivotType;
-import com.awtpi314.Sorter.SortType;
 
 public class Tests {
   private static final int[] ARRAY_LENGTHS = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -31,69 +24,5 @@ public class Tests {
         reversed[i][j] = ARRAY_LENGTHS[i] - j;
       }
     }
-  }
-
-  @Test
-  public void testInsertionSort() {
-    System.out.println("Starting Random");
-
-    TestRunner randomInsertion = new TestRunner(Arrays.copyOfRange(random, 0, 64), "random", SortType.INSERTION,
-        PartitionType.SINGLE, PivotType.RANDOM);
-    Thread[] randomThreads = new Thread[10];
-
-    for (int i = 0; i < 10; i++) {
-      randomThreads[i] = new Thread(randomInsertion);
-      randomThreads[i].start();
-    }
-
-    try {
-      for (int i = 0; i < 10; i++) {
-        randomThreads[i].join();
-      }
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    System.out.println("Random done");
-    System.out.println("Starting Sorted");
-
-    TestRunner sortedInsertion = new TestRunner(Arrays.copyOfRange(sorted, 0, 64), "sorted", SortType.INSERTION,
-        PartitionType.SINGLE, PivotType.RANDOM);
-    Thread[] sortedThreads = new Thread[10];
-
-    for (int i = 0; i < 10; i++) {
-      sortedThreads[i] = new Thread(sortedInsertion);
-      sortedThreads[i].start();
-    }
-
-    try {
-      for (int i = 0; i < 10; i++) {
-        sortedThreads[i].join();
-      }
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    System.out.println("Sorted done");
-    System.out.println("Starting Reversed");
-
-    TestRunner reversedInsertion = new TestRunner(Arrays.copyOfRange(reversed, 0, 64), "reversed", SortType.INSERTION,
-        PartitionType.SINGLE, PivotType.RANDOM);
-    Thread[] reversedThreads = new Thread[10];
-
-    for (int i = 0; i < 10; i++) {
-      reversedThreads[i] = new Thread(reversedInsertion);
-      reversedThreads[i].start();
-    }
-
-    try {
-      for (int i = 0; i < 10; i++) {
-        reversedThreads[i].join();
-      }
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-    }
-
-    System.out.println("Reversed done");
   }
 }

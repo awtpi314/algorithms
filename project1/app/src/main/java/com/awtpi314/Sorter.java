@@ -1,6 +1,18 @@
 package com.awtpi314;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Arrays;
+
 public class Sorter {
+
+  private static final int[] ARRAY_LENGTHS = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+      21, 22, 23, 24, 25, 50, 75,
+      100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 2000, 3000,
+      4000, 5000, 6000, 7000, 8000, 9000, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000,
+      200000, 300000, 400000, 500000, 600000, 700000, 800000, 900000, 1000000 };
+  int[][][] numbers = new int[3][ARRAY_LENGTHS.length][];
+
   public enum PivotType {
     RANDOM, MEDIAN, MEDIAN_OF_3, FIRST, LAST
   }
@@ -35,22 +47,29 @@ public class Sorter {
   }
 
   private int singlePartitionRandom(int[] unsorted, int first, int last) {
-    int pivot = unsorted[(int) (Math.random() * (last - first) + first)];
+    int location = (int) (Math.random() * (last - first) + first);
+    int pivot = unsorted[location];
+    swap(unsorted, location, last);
     return singlePointerPartition(unsorted, first, last, pivot);
   }
 
   private int singlePartitionMedian(int[] unsorted, int first, int last) {
-    int pivot = unsorted[last / 2];
+    int location = last / 2;
+    int pivot = unsorted[location];
+    swap(unsorted, location, last);
     return singlePointerPartition(unsorted, first, last, pivot);
   }
 
   private int singlePartitionMedianOf3(int[] unsorted, int first, int last) {
-    int pivot = unsorted[(first + last) / 2];
+    int location = (first + last) / 2;
+    int pivot = unsorted[location];
+    swap(unsorted, location, last);
     return singlePointerPartition(unsorted, first, last, pivot);
   }
 
   private int singlePartitionFirst(int[] unsorted, int first, int last) {
     int pivot = unsorted[first];
+    swap(unsorted, first, last);
     return singlePointerPartition(unsorted, first, last, pivot);
   }
 
@@ -60,22 +79,29 @@ public class Sorter {
   }
 
   private int dualPartitionRandom(int[] unsorted, int first, int last) {
-    int pivot = unsorted[(int) (Math.random() * (last - first) + first)];
+    int location = (int) (Math.random() * (last - first) + first);
+    int pivot = unsorted[location];
+    swap(unsorted, location, last);
     return dualPointerPartition(unsorted, first, last, pivot);
   }
 
   private int dualPartitionMedian(int[] unsorted, int first, int last) {
-    int pivot = unsorted[last / 2];
+    int location = last / 2;
+    int pivot = unsorted[location];
+    swap(unsorted, location, last);
     return dualPointerPartition(unsorted, first, last, pivot);
   }
 
   private int dualPartitionMedianOf3(int[] unsorted, int first, int last) {
-    int pivot = unsorted[(first + last) / 2];
+    int location = (first + last) / 2;
+    int pivot = unsorted[location];
+    swap(unsorted, location, last);
     return dualPointerPartition(unsorted, first, last, pivot);
   }
 
   private int dualPartitionFirst(int[] unsorted, int first, int last) {
     int pivot = unsorted[first];
+    swap(unsorted, first, last);
     return dualPointerPartition(unsorted, first, last, pivot);
   }
 
@@ -183,17 +209,65 @@ public class Sorter {
     }
     return true;
   }
-  
+
   public static void main(String[] args) {
-    int[] array = new int[1000000];
-    for (int i = 0; i < array.length; i++) {
-      array[i] = i;
-    }
     Sorter sorter = new Sorter();
-    long startTime = System.nanoTime();
-    sorter.quickSort(array, PivotType.LAST, PartitionType.DUAL);
-    long endTime = System.nanoTime();
-    System.out.println("Time taken: " + (endTime - startTime) / 1000000 + "ms");
-    System.out.println(isSorted(array));
+    sorter.setUp();
+
+    SortType sort = SortType.INSERTION;
+    PartitionType part = PartitionType.SINGLE;
+    PivotType pivot = PivotType.RANDOM;
+
+    for (int i = 0; i < 3; i++) {
+      String arrayType = i == 0 ? "Random" : i == 1 ? "Sorted" : "Reversed";
+      File file;
+      if (sort == SortType.QUICK) {
+        new File(String.format("output/%s/%s/%s/%s", sort.name(), arrayType, part.name(), pivot)).mkdirs();
+        file = new File(
+            String.format("output/%s/%s/%s/%s/%d.csv", sort.name(), arrayType, part.name(), pivot, System.nanoTime()));
+      } else {
+        new File(String.format("output/%s/%s", sort.name(), arrayType)).mkdirs();
+        file = new File(String.format("output/%s/%s/%d.csv", sort.name(), arrayType, System.nanoTime()));
+      }
+      try {
+        FileWriter writer = new FileWriter(file);
+        for (int j = 0; j < ARRAY_LENGTHS.length; j++) {
+          writer.write(String.format("%d,", ARRAY_LENGTHS[j]));
+          for (int k = 0; k < 10; k++) {
+            int[] current = Arrays.copyOf(sorter.numbers[i][j], sorter.numbers[i][j].length);
+            long start = System.nanoTime();
+            if (sort == SortType.QUICK) {
+              sorter.quickSort(current, pivot, part);
+            } else {
+              if (current.length <= 200000) {
+                sorter.insertionSort(current);
+              } else {
+                continue;
+              }
+            }
+            long end = System.nanoTime();
+            writer.write(String.format("%.6f,", (end - start) / 1000000.0));
+            assert isSorted(current);
+          }
+          writer.write("\n");
+        }
+        writer.close();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public void setUp() {
+    for (int i = 0; i < ARRAY_LENGTHS.length; i++) {
+      numbers[0][i] = new int[ARRAY_LENGTHS[i]];
+      numbers[1][i] = new int[ARRAY_LENGTHS[i]];
+      numbers[2][i] = new int[ARRAY_LENGTHS[i]];
+      for (int j = 0; j < ARRAY_LENGTHS[i]; j++) {
+        numbers[0][i][j] = (int) (Math.random() * 1000000);
+        numbers[1][i][j] = j;
+        numbers[2][i][j] = ARRAY_LENGTHS[i] - j;
+      }
+    }
   }
 }
