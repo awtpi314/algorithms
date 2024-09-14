@@ -28,6 +28,12 @@ public class Sorter {
     }
   }
 
+  private void swap(int[] unsorted, int i, int j) {
+    int temp = unsorted[i];
+    unsorted[i] = unsorted[j];
+    unsorted[j] = temp;
+  }
+
   private int singlePartitionRandom(int[] unsorted, int first, int last) {
     int pivot = unsorted[(int) (Math.random() * (last - first) + first)];
     return singlePointerPartition(unsorted, first, last, pivot);
@@ -90,33 +96,25 @@ public class Sorter {
         lower++;
       }
       if (lower < upper) {
-        int temp = unsorted[lower];
-        unsorted[lower] = unsorted[upper];
-        unsorted[upper] = temp;
+        swap(unsorted, lower, upper);
       }
     }
 
-    int temp = unsorted[lower];
-    unsorted[lower] = unsorted[last];
-    unsorted[last] = temp;
+    swap(unsorted, lower, last);
 
     return lower;
   }
 
   private int singlePointerPartition(int[] unsorted, int first, int last, int pivot) {
     int lowPointer = first - 1;
-    for (int i = first; i < last - 1; i++) {
-      if (unsorted[i] < pivot) {
+    for (int ptr = first; ptr < last; ptr++) {
+      if (unsorted[ptr] <= pivot) {
         lowPointer++;
-        int temp = unsorted[lowPointer];
-        unsorted[lowPointer] = unsorted[i];
-        unsorted[i] = temp;
+        swap(unsorted, lowPointer, ptr);
       }
     }
     lowPointer++;
-    int temp = unsorted[lowPointer];
-    unsorted[lowPointer] = unsorted[last];
-    unsorted[last] = temp;
+    swap(unsorted, lowPointer, last);
     return lowPointer;
   }
 
@@ -176,6 +174,23 @@ public class Sorter {
       quickSort(unsorted, middle + 1, last, pivotType, partitionType);
     }
   }
+
+  public static boolean isSorted(int[] array) {
+    for (int i = 1; i < array.length; i++) {
+      if (array[i - 1] > array[i]) {
+        return false;
+      }
+    }
+    return true;
+  }
   
-  public static void main(String[] args) {}
+  public static void main(String[] args) {
+    int[] array = new int[1000000];
+    for (int i = 0; i < array.length; i++) {
+      array[i] = (int) (Math.random() * 100);
+    }
+    Sorter sorter = new Sorter();
+    sorter.quickSort(array, PivotType.LAST, PartitionType.SINGLE);
+    System.out.println(isSorted(array));
+  }
 }

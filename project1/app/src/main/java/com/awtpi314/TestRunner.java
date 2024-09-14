@@ -2,6 +2,7 @@ package com.awtpi314;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Arrays;
 
 import com.awtpi314.Sorter.PartitionType;
 import com.awtpi314.Sorter.PivotType;
@@ -22,38 +23,32 @@ public class TestRunner implements Runnable {
     this.pivotType = pivotType;
   }
 
-  private boolean isSorted(int[] array) {
-    for (int i = 1; i < array.length; i++) {
-      if (array[i - 1] > array[i]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   public void run() {
     Sorter sorter = new Sorter();
     double times[] = new double[toSort.length];
 
     for (int i = 0; i < toSort.length; i++) {
+      int[] current = Arrays.copyOf(toSort[i], toSort[i].length);
       long start = System.nanoTime();
       if (sortType == SortType.QUICK) {
-        sorter.quickSort(toSort[i], pivotType, partitionType);
+        sorter.quickSort(current, pivotType, partitionType);
       } else if (sortType == SortType.INSERTION) {
-        sorter.insertionSort(toSort[i]);
+        sorter.insertionSort(current);
       }
       long end = System.nanoTime();
       times[i] = (end - start) / 1000000000.0;
-      assert isSorted(toSort[i]);
+
+      assert Sorter.isSorted(current);
     }
 
-    new File("output").mkdir();
+    File dirMaker = new File(String.format("output/%s/%s", sortType.name(), name));
+    dirMaker.mkdirs();
     File file;
     if (sortType == SortType.QUICK) {
-      file = new File(String.format("output/%s_%s_%s_%s_%d_%d.csv", sortType.name(), name, partitionType.name(), pivotType,
+      file = new File(String.format("output/%s/%s/%s_%s_%d_%d.csv", sortType.name(), name, partitionType.name(), pivotType,
           toSort.length, System.nanoTime()));
     } else {
-      file = new File(String.format("output/%s_%s_%d_%d.csv", sortType.name(), name, toSort.length, System.nanoTime()));
+      file = new File(String.format("output/%s/%s/%d_%d.csv", sortType.name(), name, toSort.length, System.nanoTime()));
     }
 
     FileWriter writer;

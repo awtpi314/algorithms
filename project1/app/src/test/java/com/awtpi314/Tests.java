@@ -95,30 +95,5 @@ public class Tests {
     }
 
     System.out.println("Reversed done");
-
-    // Sorter sorter = new Sorter();
-    // System.out.println("Array Length,Random,Sorted,Reversed");
-    // for (int i = 0; ARRAY_LENGTHS[i] <= 200000; i++) {
-    // System.out.printf("%d,", ARRAY_LENGTHS[i]);
-
-    // long start = System.nanoTime();
-    // sorter.insertionSort(random[i]);
-    // long end = System.nanoTime();
-    // System.out.printf("%.9f,", (end - start) / 1000000000.0);
-
-    // start = System.nanoTime();
-    // sorter.insertionSort(sorted[i]);
-    // end = System.nanoTime();
-    // System.out.printf("%.9f,", (end - start) / 1000000000.0);
-
-    // start = System.nanoTime();
-    // sorter.insertionSort(reversed[i]);
-    // end = System.nanoTime();
-    // System.out.printf("%.9f\n", (end - start) / 1000000000.0);
-
-    // assert isSorted(random[i]);
-    // assert isSorted(sorted[i]);
-    // assert isSorted(reversed[i]);
-    // }
   }
 }
