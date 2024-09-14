@@ -187,10 +187,13 @@ public class Sorter {
   public static void main(String[] args) {
     int[] array = new int[1000000];
     for (int i = 0; i < array.length; i++) {
-      array[i] = (int) (Math.random() * 100);
+      array[i] = i;
     }
     Sorter sorter = new Sorter();
-    sorter.quickSort(array, PivotType.LAST, PartitionType.SINGLE);
+    long startTime = System.nanoTime();
+    sorter.quickSort(array, PivotType.LAST, PartitionType.DUAL);
+    long endTime = System.nanoTime();
+    System.out.println("Time taken: " + (endTime - startTime) / 1000000 + "ms");
     System.out.println(isSorted(array));
   }
 }
