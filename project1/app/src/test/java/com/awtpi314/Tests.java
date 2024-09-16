@@ -1,6 +1,7 @@
 package com.awtpi314;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class Tests {
   private static final int[] ARRAY_LENGTHS = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -24,5 +25,15 @@ public class Tests {
         reversed[i][j] = ARRAY_LENGTHS[i] - j;
       }
     }
+  }
+
+  @Test
+  public void testInsertionSort() {
+    Sorter sorter = new Sorter();
+    long startTime = System.nanoTime();
+    sorter.insertionSort(random[random.length - 1]);
+    long endTime = System.nanoTime();
+    System.out.println("Insertion sort on random array of length " + random[random.length - 1].length + " took "
+        + (endTime - startTime) + " nanoseconds");
   }
 }
