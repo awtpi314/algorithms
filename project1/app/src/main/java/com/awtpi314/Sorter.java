@@ -54,14 +54,22 @@ public class Sorter {
   }
 
   private int singlePartitionMedian(int[] unsorted, int first, int last) {
-    int location = last / 2;
+    int location = (first + last) / 2;
     int pivot = unsorted[location];
     swap(unsorted, location, last);
     return singlePointerPartition(unsorted, first, last, pivot);
   }
 
   private int singlePartitionMedianOf3(int[] unsorted, int first, int last) {
-    int location = (first + last) / 2;
+    int location;
+    int middle = (first + last) / 2;
+    if ((first > middle) && (first > last)) {
+      location = first;
+    } else if ((middle > first) && (middle > last)) {
+      location = middle;
+    } else {
+      location = last;
+    }
     int pivot = unsorted[location];
     swap(unsorted, location, last);
     return singlePointerPartition(unsorted, first, last, pivot);
@@ -86,14 +94,22 @@ public class Sorter {
   }
 
   private int dualPartitionMedian(int[] unsorted, int first, int last) {
-    int location = last / 2;
+    int location = (first + last) / 2;
     int pivot = unsorted[location];
     swap(unsorted, location, last);
     return dualPointerPartition(unsorted, first, last, pivot);
   }
 
   private int dualPartitionMedianOf3(int[] unsorted, int first, int last) {
-    int location = (first + last) / 2;
+    int location;
+    int middle = (first + last) / 2;
+    if ((first > middle) && (first > last)) {
+      location = first;
+    } else if ((middle > first) && (middle > last)) {
+      location = middle;
+    } else {
+      location = last;
+    }
     int pivot = unsorted[location];
     swap(unsorted, location, last);
     return dualPointerPartition(unsorted, first, last, pivot);
@@ -214,9 +230,9 @@ public class Sorter {
     Sorter sorter = new Sorter();
     sorter.setUp();
 
-    SortType sort = SortType.INSERTION;
-    PartitionType part = PartitionType.SINGLE;
-    PivotType pivot = PivotType.RANDOM;
+    SortType sort = SortType.QUICK;
+    PartitionType part = PartitionType.DUAL;
+    PivotType pivot = PivotType.MEDIAN_OF_3;
 
     for (int i = 0; i < 3; i++) {
       String arrayType = i == 0 ? "Random" : i == 1 ? "Sorted" : "Reversed";
@@ -237,7 +253,11 @@ public class Sorter {
             int[] current = Arrays.copyOf(sorter.numbers[i][j], sorter.numbers[i][j].length);
             long start = System.nanoTime();
             if (sort == SortType.QUICK) {
-              sorter.quickSort(current, pivot, part);
+              if (current.length <= 1000000) {
+                sorter.quickSort(current, pivot, part);
+              } else {
+                continue;
+              }
             } else {
               if (current.length <= 200000) {
                 sorter.insertionSort(current);
@@ -247,6 +267,7 @@ public class Sorter {
             }
             long end = System.nanoTime();
             writer.write(String.format("%.6f,", (end - start) / 1000000.0));
+            writer.flush();
             assert isSorted(current);
           }
           writer.write("\n");
