@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class CoinCombinations {
-  private static Node bottomUpSolve(int[] denominations, int target) {
-    Node[] coinCombos = new Node[target];
+  private static Purse bottomUpSolve(int[] denominations, int target) {
+    Purse[] coinCombos = new Purse[target];
 
     for (int i = 1; i <= target; i++) {
       coinCombos[i] = getDenominations(coinCombos, denominations, i);
@@ -14,17 +14,17 @@ public class CoinCombinations {
     return coinCombos[target];
   }
 
-  private static Node noMemRecurse(int[] denominations, int target) {
-   Node[] ans;
+  private static Purse noMemRecurse(int[] denominations, int target) {
+   Purse[] ans = new Purse[denominations.length];
    if (target == 0) {
     int[] sol = new int[denominations.length];
     for (int i : sol) {
       sol[i] = 0;
     }
   
-    Node newNode = new Node(sol, denominations.length);
+    Purse newPurse = new Purse(sol, denominations.length);
      
-     return newNode;
+     return newPurse;
    }
 
    for (int i : denominations) {
@@ -32,23 +32,27 @@ public class CoinCombinations {
       ans[i] = noMemRecurse(denominations, target - denominations[i]);
     }
    }
-
+   //Set current Purse to have the best sol
    //return best sol of ans
-    //ans is an array nodes
-   Node bestAns = null;
-   for (Node node : ans) {
-    if() {}
-      bestAns = node;
+    //ans is an array Purses
+
+   Purse bestAns = ans[0];
+   int i = 0;
+   for (Purse Purse : ans) {
+    i++;
+    if(bestAns.getSolSize() > Purse.getSolSize()) {}
+      bestAns = Purse;
     }
+    return bestAns;
    }
-   return bestAns;
-  }
+
+  
 
   private static int[] memRecurse(int[] denominations, int target) {
-    return;
+    return new int[0];
   }
 
-  private static Node getDenominations(Node[] table, int[] denominations, int target) {
+  private static Purse getDenominations(Purse[] table, int[] denominations, int target) {
     int[] bestSol = table[target - denominations[0]].getSolution();
     int bestSolSize = table[target - denominations[0]].getSolSize() + 1;
 
@@ -59,8 +63,8 @@ public class CoinCombinations {
         }
       }
     }
-    Node newNode = new Node(bestSol, denominations.length);
-    return newNode;
+    Purse newPurse = new Purse(bestSol, denominations.length);
+    return newPurse;
   }
 
   private static void getDenominations(int[] denominations, int target) {
@@ -68,35 +72,41 @@ public class CoinCombinations {
   }
 
   public static void main(String[] args) {
-    Scanner sc = new Scanner(System.in);
+    // Scanner sc = new Scanner(System.in);
 
-    System.out.println("How many denominations are in your currency?");
-    int numDenominations = sc.nextInt();
+    // System.out.println("How many denominations are in your currency?");
+    // int numDenominations = sc.nextInt();
 
-    int[] denominations = new int[numDenominations];
-    for (int i = 0; i < numDenominations; i++) {
-      denominations[i] = sc.nextInt();
-    }
+    // int[] denominations = new int[numDenominations];
+    // for (int i = 0; i < numDenominations; i++) {
+    //   denominations[i] = sc.nextInt();
+    // }
 
-    sc.close();
+    // sc.close();
 
-    int max = 300;
+    // int max = 300;
 
-    int[] coins = new int[numDenominations];
+    // int[] coins = new int[numDenominations];
 
-    for (int i = 1; i <= max; i++) {
-      System.out.println(i);
-      for (int j = numDenominations - 1; j >= 0; j--) {
-        int current = i;
-        for (int k = j; k >= 0; k--) {
-          if (current / denominations[k] > 0) {
-            coins[k] = current / denominations[k];
-          }
-          current %= denominations[k];
-        }
-        System.out.println(Arrays.toString(coins));
-        Arrays.fill(coins, 0);
-      }
-    }
+    // for (int i = 1; i <= max; i++) {
+    //   System.out.println(i);
+    //   for (int j = numDenominations - 1; j >= 0; j--) {
+    //     int current = i;
+    //     for (int k = j; k >= 0; k--) {
+    //       if (current / denominations[k] > 0) {
+    //         coins[k] = current / denominations[k];
+    //       }
+    //       current %= denominations[k];
+    //     }
+    //     System.out.println(Arrays.toString(coins));
+    //     Arrays.fill(coins, 0);
+    //   }
+    // }
+
+    AnswerTable table = AnswerTable.getInstance();
+    int[] denominations = new int[] {1, 2, 7};
+    table.setDenominations(denominations);
+    CoinPurseMemoized purse = new CoinPurseMemoized(2, denominations);
+    System.out.println(Arrays.toString(purse.getCoins()));
   }
 }

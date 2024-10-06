@@ -1,13 +1,11 @@
 package com.awtpi314;
 
-import java.util.ArrayList;
-
-public class Node {
+public class Purse {
     private int solSize;
     private int denominations;
     private int[] solution = new int[denominations];   
     
-    public Node(int[]solution, int denominations) {
+    public Purse(int[]solution, int denominations) {
       this.denominations = denominations;
       this.solution = solution;
     }
@@ -26,4 +24,6 @@ public class Node {
     public int[] getSolution() {
         return this.solution;
     }
+
+    
 }
