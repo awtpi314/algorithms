@@ -20,26 +20,36 @@ public class CoinCombinations {
 
     for (int i = 0; i < numProblems; i++) {
       int target = sc.nextInt();
-      
-      CoinPurseMemoized purse = new CoinPurseMemoized(target, denominations);
+     
       System.out.printf("%d cents = ", target);
-      for (int j = purse.getCoins().length - 1; j >= 0; j--) {
-        if (purse.getCoins()[j] == 0) {
-          continue;
-        }
-        System.out.printf("%d:%d ", denominations[j], purse.getCoins()[j]);
-      }
-      System.out.println();
-
-      // CoinPurseNonMemoized purse2 = new CoinPurseNonMemoized(target, denominations);
+      /*Memoized Recursive*/
+      CoinPurseMemoized purse = new CoinPurseMemoized(target, denominations);
+      
+      /*Non-Memoized Recursive */
+      // CoinPurseNonMemoized purse = new CoinPurseNonMemoized(target, denominations);
       // System.out.println(Arrays.toString(purse2.getCoins()));
-
-      // AnswerTable.getInstance().clear();
+      
       // for (int j = 1; j <= target; j++) {
-      //   new CoinPurseMemoized(j, denominations);
-      // }
-      // System.out.println(Arrays.toString(AnswerTable.getInstance().get(target).getCoins()));
-    }
+        //   new CoinPurseMemoized(j, denominations);
+        // }
+        // System.out.println(Arrays.toString(AnswerTable.getInstance().get(target).getCoins()));
+        
+        /*Non-Memoized  Bottom Up Construction*/        
+        // CoinPurseMemoized purse = new CoinPurseMemoized(0, denominations);
+        // for (int j = 1; j <= target; j++) {
+        //   purse = new CoinPurseMemoized(j, denominations);
+        // }
+        // AnswerTable.getInstance().clear();
+        
+        for (int j = purse.getCoins().length - 1; j >= 0; j--) {
+          if (purse.getCoins()[j] == 0) {
+            continue;
+          }
+          System.out.printf("%d:%d ", denominations[j], purse.getCoins()[j]);
+        }
+        System.out.println();
+      
+      }
 
     sc.close();
   }
