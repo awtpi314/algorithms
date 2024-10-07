@@ -55,4 +55,8 @@ public class AnswerTable {
   public void setDenominations(int[] denominations) {
     this.denominations = denominations;
   }
+
+  public void clear() {
+    table.clear();
+  }
 }
