@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class CoinCombinations {
   public static void main(String[] args) {
     Scanner sc = new Scanner(System.in);
-    
+
     int numDenominations = sc.nextInt();
 
     int[] denominations = new int[numDenominations];
@@ -19,37 +19,42 @@ public class CoinCombinations {
     int numProblems = sc.nextInt();
 
     for (int i = 0; i < numProblems; i++) {
+      AnswerTable.getInstance().clear();
       int target = sc.nextInt();
-     
+
       System.out.printf("%d cents = ", target);
-      /*Memoized Recursive*/
-      CoinPurseMemoized purse = new CoinPurseMemoized(target, denominations);
-      
-      /*Non-Memoized Recursive */
+      // /* Memoized Recursive */
+      // CoinPurseMemoized purse = new CoinPurseMemoized(target, denominations);
+
+      // /* Non-Memoized Recursive */
       // CoinPurseNonMemoized purse = new CoinPurseNonMemoized(target, denominations);
-      // System.out.println(Arrays.toString(purse2.getCoins()));
-      
+
       // for (int j = 1; j <= target; j++) {
-        //   new CoinPurseMemoized(j, denominations);
-        // }
-        // System.out.println(Arrays.toString(AnswerTable.getInstance().get(target).getCoins()));
-        
-        /*Non-Memoized  Bottom Up Construction*/        
-        // CoinPurseMemoized purse = new CoinPurseMemoized(0, denominations);
-        // for (int j = 1; j <= target; j++) {
-        //   purse = new CoinPurseMemoized(j, denominations);
-        // }
-        // AnswerTable.getInstance().clear();
-        
-        for (int j = purse.getCoins().length - 1; j >= 0; j--) {
-          if (purse.getCoins()[j] == 0) {
-            continue;
-          }
-          System.out.printf("%d:%d ", denominations[j], purse.getCoins()[j]);
-        }
-        System.out.println();
-      
+      // new CoinPurseMemoized(j, denominations);
+      // }
+      // System.out.println(Arrays.toString(AnswerTable.getInstance().get(target).getCoins()));
+
+      /* Non-Memoized Bottom Up Construction */
+      CoinPurseMemoized purse = new CoinPurseMemoized(0, denominations);
+      for (int j = 1; j <= target; j++) {
+        purse = new CoinPurseMemoized(j, denominations);
       }
+
+      boolean first = true;
+      for (int j = purse.getCoins().length - 1; j >= 0; j--) {
+        if (purse.getCoins()[j] == 0) {
+          continue;
+        }
+        if (!first) {
+          System.out.print(" ");
+        } else {
+          first = false;
+        }
+        System.out.printf("%d:%d", denominations[j], purse.getCoins()[j]);
+      }
+      System.out.println();
+
+    }
 
     sc.close();
   }
