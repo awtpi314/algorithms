@@ -3,12 +3,12 @@ package com.awtpi314;
 import java.util.ArrayList;
 
 public class AnswerTable {
-  private ArrayList<CoinPurseMemoized> table;
+  private ArrayList<CoinPurse> table;
   private int[] denominations;
   private static AnswerTable instance;
 
   private AnswerTable() {
-    table = new ArrayList<CoinPurseMemoized>();
+    table = new ArrayList<CoinPurse>();
   }
 
   public static AnswerTable getInstance() {
@@ -18,7 +18,7 @@ public class AnswerTable {
     return instance;
   }
 
-  public void set(int value, CoinPurseMemoized purse) throws RuntimeException {
+  public void set(int value, CoinPurse purse) throws RuntimeException {
     if (table.size() <= value) {
       table.ensureCapacity(value + 1);
       for (int i = table.size(); i <= value; i++) {
@@ -31,17 +31,17 @@ public class AnswerTable {
     if (value < 0) {
       throw new RuntimeException("Value must be larger than zero");
     }
-    table.add(value - 1, new CoinPurseMemoized(purse));
+    table.add(value - 1, new CoinPurse(purse));
   }
 
-  public CoinPurseMemoized get(int value) throws RuntimeException {
+  public CoinPurse get(int value) throws RuntimeException {
     if (value < 0 || value > table.size()) {
       throw new RuntimeException("Table must contain the passed value");
     }
     if (value == 0) {
-      return new CoinPurseMemoized(0, denominations);
+      return new CoinPurse(0, denominations, true);
     }
-    return new CoinPurseMemoized(table.get(value - 1));
+    return new CoinPurse(table.get(value - 1));
   }
 
   public boolean exists(int value) {
