@@ -35,7 +35,7 @@ public class CoinCombinations {
         continue;
       }
       if (!first) {
-        System.out.print(" ");
+        writer.printf(" ");
       } else {
         first = false;
       }
@@ -85,7 +85,7 @@ public class CoinCombinations {
 
     return purse;
   }
-  
+
   public static void main(String[] args) {
     try {
       writer = new PrintWriter(csvFile);
