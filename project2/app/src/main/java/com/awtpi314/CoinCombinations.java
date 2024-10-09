@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class CoinCombinations {
-  private static final String OUTPUT_FILE = "output.csv";
+  private static final String OUTPUT_FILE = "output_2.csv";
   private static PrintWriter writer;
 
   /**
@@ -45,7 +45,7 @@ public class CoinCombinations {
    */
   public static void printSolutionCSV(int target, int[] denominations, CoinPurse purse, long time) {
 
-    writer.printf("%d cents,", target);
+    writer.printf("%d,", target);
     boolean first = true;
     for (int j = purse.getCoins().length - 1; j >= 0; j--) {
       if (purse.getCoins()[j] == 0) {
@@ -58,7 +58,7 @@ public class CoinCombinations {
       }
       writer.printf("%d:%d", denominations[j], purse.getCoins()[j]);
     }
-    writer.printf(",%.5f seconds\n", (double) (time / 1000000000.0));
+    writer.printf(",%.5f\n", (double) (time / 1000000000.0));
   }
 
   /**
@@ -84,16 +84,16 @@ public class CoinCombinations {
 
       /* Non-Memoized Recursive */
 
-      start = System.nanoTime();
-      purse = new CoinPurse(i, denominations, false);
-      end = System.nanoTime();
+      // start = System.nanoTime();
+      // purse = new CoinPurse(i, denominations, false);
+      // end = System.nanoTime();
 
-      printSolutionCSV(i, denominations, purse, end - start);
+      // printSolutionCSV(i, denominations, purse, end - start);
 
       /* Non-Memoized Bottom Up Construction */
 
       start = System.nanoTime();
-      bottumUp(i, denominations);
+      purse = bottumUp(i, denominations);
       AnswerTable.getInstance().clear();
       end = System.nanoTime();
 
