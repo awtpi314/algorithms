@@ -7,6 +7,12 @@ import java.util.Arrays;
  * 
  * This class solves a coin purse in the constructor using denominations and a
  * target value.
+ * 
+ * <h4>Overview of the algorithm</h4>
+ * The algorithm works by taking the target value and subtracts each
+ * denomination from it. It calculates the best purse for each of those sub
+ * problems and then adds the current denomination to the best purse. Once we
+ * have this, we know what the best purse is for the current value.
  */
 public class CoinPurse {
   private int[] denominations;
