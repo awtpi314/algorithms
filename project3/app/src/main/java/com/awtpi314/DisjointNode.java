@@ -1,12 +1,12 @@
 package com.awtpi314;
 
 public class DisjointNode {
-  private DisjointNode parent;
+  private DisjointNode rep;
   private int rank;
   private Location location;
 
   public DisjointNode(Location location) {
-    this.parent = this;
+    this.rep = this;
     this.rank = 0;
     this.location = location;
   }
@@ -17,10 +17,10 @@ public class DisjointNode {
   }
 
   public DisjointNode findRepresentative() {
-    if (this.parent != this) {
-      this.parent = this.parent.findRepresentative();
+    if (this.rep != this) {
+      this.rep = this.rep.findRepresentative();
     }
-    return this.parent;
+    return this.rep;
   }
 
   public DisjointNode union(DisjointNode other) {
@@ -32,13 +32,13 @@ public class DisjointNode {
     }
 
     if (leftRoot.rank < rightRoot.rank) {
-      leftRoot.parent = rightRoot;
+      leftRoot.rep = rightRoot;
       return rightRoot;
     } else if (leftRoot.rank > rightRoot.rank) {
-      rightRoot.parent = leftRoot;
+      rightRoot.rep = leftRoot;
       return leftRoot;
     } else {
-      rightRoot.parent = leftRoot;
+      rightRoot.rep = leftRoot;
       leftRoot.rank++;
       return leftRoot;
     }
