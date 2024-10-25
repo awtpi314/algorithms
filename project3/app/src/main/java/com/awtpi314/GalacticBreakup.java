@@ -4,7 +4,6 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.Scanner;
-
 /**
  * The GalacticBreakup class represents a program that determines the number of
  * months a galaxy spends disconnected after a series of monarchies break off.
@@ -13,7 +12,7 @@ public class GalacticBreakup {
   private static int numSets = 0;
   private static int disconnectedMonths;
   private static DisjointNode[][][] galaxy;
-  private static Deque<ArrayList<DisjointNode>> monarchies = new ArrayDeque<>();
+  private static Deque<ArrayList<DisjointNode>> monarchies;
 
   /**
    * Find the adjacent nodes to the given node that are not in the same set.
@@ -90,7 +89,7 @@ public class GalacticBreakup {
     int l = sc.nextInt();
 
     galaxy = new DisjointNode[n][m][k];
-
+    monarchies = new ArrayDeque<>(l);
     // Read in the dominions and store them in a stack
     for (int i = 0; i < l; i++) {
       int dominions = sc.nextInt();
