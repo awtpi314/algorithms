@@ -1,21 +1,24 @@
 package com.awtpi314;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.Queue;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class GalacticBreakup {
   private static int numSets = 0;
-  private static int disconneectedMonths;
+  private static int disconnectedMonths;
   private static DisjointNode[][][] galaxy;
-  private static Stack<ArrayList<DisjointNode>> monarchies = new Stack<>();
+  private static Deque<ArrayList<DisjointNode>> monarchies = new ArrayDeque();
 
   private static ArrayList<DisjointNode> findAdjacent(DisjointNode adjacentTo) {
     if (adjacentTo == null) {
       return null;
     }
 
-    DisjointNode parent = adjacentTo.findRepresentative();
+    DisjointNode rep = adjacentTo.findRepresentative();
 
     Location loc = adjacentTo.getLocation();
     int x = loc.getX();
@@ -24,39 +27,39 @@ public class GalacticBreakup {
 
     ArrayList<DisjointNode> adjacencies = new ArrayList<DisjointNode>();
 
-    if (x - 1 > 0) {
+    if (x - 1 >= 0) {
       DisjointNode adjacent = galaxy[x - 1][y][z];
-      if (adjacent != null && adjacent.findRepresentative() != parent) {
+      if (adjacent != null && adjacent.findRepresentative() != rep) {
         adjacencies.add(adjacent);
       }
     }
     if (x + 1 < galaxy.length) {
       DisjointNode adjacent = galaxy[x + 1][y][z];
-      if (adjacent != null && adjacent.findRepresentative() != parent) {
+      if (adjacent != null && adjacent.findRepresentative() != rep) {
         adjacencies.add(adjacent);
       }
     }
-    if (y - 1 > 0) {
+    if (y - 1 >= 0) {
       DisjointNode adjacent = galaxy[x][y - 1][z];
-      if (adjacent != null && adjacent.findRepresentative() != parent) {
+      if (adjacent != null && adjacent.findRepresentative() != rep) {
         adjacencies.add(adjacent);
       }
     }
     if (y + 1 < galaxy[0].length) {
       DisjointNode adjacent = galaxy[x][y + 1][z];
-      if (adjacent != null && adjacent.findRepresentative() != parent) {
+      if (adjacent != null && adjacent.findRepresentative() != rep) {
         adjacencies.add(adjacent);
       }
     }
-    if (z - 1 > 0) {
+    if (z - 1 >= 0) {
       DisjointNode adjacent = galaxy[x][y][z - 1];
-      if (adjacent != null && adjacent.findRepresentative() != parent) {
+      if (adjacent != null && adjacent.findRepresentative() != rep) {
         adjacencies.add(adjacent);
       }
     }
     if (z + 1 < galaxy[0][0].length) {
       DisjointNode adjacent = galaxy[x][y][z + 1];
-      if (adjacent != null && adjacent.findRepresentative() != parent) {
+      if (adjacent != null && adjacent.findRepresentative() != rep) {
         adjacencies.add(adjacent);
       }
     }
@@ -101,10 +104,10 @@ public class GalacticBreakup {
         }
       }
       if (numSets > 1) {
-        disconneectedMonths++;
+        disconnectedMonths++;
       }
     }
 
-    System.out.println(disconneectedMonths);
+    System.out.println(disconnectedMonths);
   }
 }
