@@ -19,6 +19,7 @@ public class BoardState {
   }
 
   public BoardState(String[][] board, String lastMove) {
+    //TODO: shallow COPY
     this.board = board;
     this.lastMove = lastMove;
   }
@@ -50,7 +51,7 @@ public class BoardState {
           boolean behindFound = true;
           int k = 1;
 
-          while (aheadFound) {
+          while (aheadFound && i - (k + size) * (vertical + horizontal) > 0) {
             if (board[i - k * vertical][j - k * horizontal] == null) {
               String dir = horizontal == 1 ? "left" : "up";
               // insert board
@@ -70,9 +71,8 @@ public class BoardState {
           }
 
           k = 1;
-          while (behindFound) {
-            if (i + (k + size) * vertical < board.length
-                && board[i + (k + size) * vertical][j + (k + size) * horizontal] == null) {
+          while (behindFound && i + (k + size) * (vertical + horizontal) < board.length) {
+            if (board[i + (k + size) * vertical][j + (k + size) * horizontal] == null) {
               // insert board
               String dir = horizontal == 1 ? "right" : "down";
               // insert board
@@ -83,9 +83,7 @@ public class BoardState {
                 nboard.board[i + (size - l - 1) * vertical][j + (size - l - 1) * horizontal] = name;
               }
 
-              nboard.board[i + k * vertical][j + k * horizontal] = name;
-              nboard.board[i - vertical][j - horizontal] = null;
-              nboard.lastMove = String.format("%s %i %s", name, k, dir);
+              nboard.lastMove = String.format("%s %o %s", name, k, dir);
               moves.add(nboard);
               k++;
             } else {
