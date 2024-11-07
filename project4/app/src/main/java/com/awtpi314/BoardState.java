@@ -57,18 +57,18 @@ public class BoardState {
           boolean behindFound = true;
           int k = 1;
 
-          while (aheadFound && i - k >= 0) {
+          while (aheadFound && i - k * vertical >= 0 && j - k * horizontal >= 0) {
             if (board[i - k * vertical][j - k * horizontal] == null) {
               String dir = horizontal == 1 ? "left" : "up";
               // insert board
               BoardState nboard = new BoardState(this);
 
-              for (int l = 0; l < size; l++) {
-                nboard.board[i - (k - l) * vertical][j - (k - l) * horizontal] = name;
+              for (int l = 0; l < k; l++) {
                 nboard.board[i + (size - l) * vertical][j + (size - l) * horizontal] = null;
+                nboard.board[i - (l + 1) * vertical][j - (l + 1) * horizontal] = name;
               }
 
-              nboard.lastMove = String.format("%s %o %s", name, k, dir);
+              nboard.lastMove = String.format("%s %d %s", name, k, dir);
               moves.add(nboard);
               k++;
             } else {
@@ -77,19 +77,19 @@ public class BoardState {
           }
 
           k = 1;
-          while (behindFound && i + (k + size) < board.length) {
+          while (behindFound && i + (k + size) * vertical < board.length && j + (k + size) * horizontal < board.length) {
             if (board[i + (k + size) * vertical][j + (k + size) * horizontal] == null) {
               // insert board
               String dir = horizontal == 1 ? "right" : "down";
               // insert board
               BoardState nboard = new BoardState(this);
 
-              for (int l = 0; l < size - k; l++) {
-                nboard.board[i + (k - l) * vertical][j + (k - l) * horizontal] = null;
-                nboard.board[i + (size - l) * vertical][j + (size - l) * horizontal] = name;
+              for (int l = 0; l < k; l++) {
+                nboard.board[i + l * vertical][j + l * horizontal] = null;
+                nboard.board[i + (size + l + 1) * vertical][j + (size + 1 + l) * horizontal] = name;
               }
 
-              nboard.lastMove = String.format("%s %o %s", name, k, dir);
+              nboard.lastMove = String.format("%s %d %s", name, k, dir);
               moves.add(nboard);
               k++;
             } else {
@@ -129,5 +129,13 @@ public class BoardState {
   @Override
   public int hashCode() {
     return Arrays.deepHashCode(board);
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) return true;
+    if (obj == null || getClass() != obj.getClass()) return false;
+    BoardState board = (BoardState) obj;
+    return Arrays.deepEquals(board.board, this.board);
   }
 }
