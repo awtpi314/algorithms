@@ -42,27 +42,38 @@ public class RushHour {
         System.out.println("No solution found.");
         break;
       }
-
       if (current.isSolved()) {
         walkBack(visited, current, 0);
+        System.out
+            .println(String.format("%d moves", walkBackMoveNumberOnly(visited, current)).equals("1 moves") ? "1 move"
+                : String.format("%d moves", walkBackMoveNumberOnly(visited, current)));
         break;
       }
 
       for (BoardState next : current.getNextMoves()) {
-        if (!visited.containsKey(next)) { 
-          visited.put(next, current);
+        if (!visited.containsKey(next)) {
           stateQueue.add(next);
+          visited.put(next, current);
         }
       }
     }
   }
 
   private static void walkBack(HashMap<BoardState, BoardState> visited, BoardState current, int depth) {
-    if (current != null) {
+    if (current.getLastMove() != "") {
       walkBack(visited, visited.get(current), depth + 1);
       System.out.println(current.getLastMove());
     } else {
       System.out.println(depth + " moves:");
     }
+  }
+
+  private static int walkBackMoveNumberOnly(HashMap<BoardState, BoardState> visited, BoardState current) {
+    int moves = 0;
+    if (current.getLastMove() != "") {
+      moves = walkBackMoveNumberOnly(visited, visited.get(current)) + 1;
+      System.out.println(moves + " " + current.getLastMove());
+    }
+    return moves;
   }
 }
