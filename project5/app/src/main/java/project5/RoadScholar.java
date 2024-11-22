@@ -12,7 +12,7 @@ public class RoadScholar {
   private static Tuple<String, Integer>[] cities;
   private static double[][] best;
   private static int numCities;
-  private static double[][] predMatrix;
+  private static int[][] predMatrix;
 
   public static void main(String[] kargs) {
     Scanner scanner = new Scanner(System.in);
@@ -20,7 +20,7 @@ public class RoadScholar {
     int numRoads = scanner.nextInt();
     numCities = scanner.nextInt();
     double[][] adjMatrix = new double[numIntersecs][numIntersecs];
-    predMatrix = new double[numIntersecs][numIntersecs];
+    predMatrix = new int[numIntersecs][numIntersecs];
 
     for (int i = 0; i < numIntersecs; i++) {
       for (int j = 0; j < numIntersecs; j++) {
@@ -81,7 +81,9 @@ public class RoadScholar {
         for (int k = 0; k < n; k++) {
           if (best[j][k] > best[j][i] + best[i][k]) {
             best[j][k] = best[j][i] + best[i][k];
-            predMatrix[j][k] = predMatrix[i][k];
+            // if ((Integer) predMatrix[j][k] != -1) {
+              predMatrix[j][k] = predMatrix[i][k];
+            // }
           }
         }
       }
@@ -102,7 +104,7 @@ public class RoadScholar {
 
     PriorityQueue<Tuple<String, Integer>> sign = new PriorityQueue<Tuple<String, Integer>>(tupleComp);
     for (Tuple<String, Integer> city : cities) {
-      if (predMatrix[loc1][city.y] == (Integer) loc2) {
+      if (predMatrix[city.y][loc1] == (Integer) loc2) {
         sign.add(new Tuple<String, Integer>(city.x, (int) Math.round(best[loc1][city.y])));
       }
     }
