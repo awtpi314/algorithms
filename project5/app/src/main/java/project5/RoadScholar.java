@@ -109,7 +109,8 @@ public class RoadScholar {
         sign.add(new Tuple<String, Integer>(city.x, (int) Math.round(best[loc1][city.y])));
       }
     }
-    for (Tuple<String, Integer> city : sign) {
+    while (!sign.isEmpty()) {
+      Tuple<String, Integer> city = sign.poll();
       System.out.printf("%-20s%d\n", city.x, Math.round(((double) city.y - offset)));
     }
   }
