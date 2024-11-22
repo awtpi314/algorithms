@@ -65,6 +65,9 @@ public class RoadScholar {
       int loc2 = scanner.nextInt();
       double offset = scanner.nextDouble();
       print(loc1, loc2, offset);
+      if (i + 1 < numSigns) {
+        System.out.println();
+      }
     }
     scanner.close();
   }
@@ -81,9 +84,7 @@ public class RoadScholar {
         for (int k = 0; k < n; k++) {
           if (best[j][k] > best[j][i] + best[i][k]) {
             best[j][k] = best[j][i] + best[i][k];
-            // if ((Integer) predMatrix[j][k] != -1) {
-              predMatrix[j][k] = predMatrix[i][k];
-            // }
+            predMatrix[j][k] = predMatrix[i][k];
           }
         }
       }
@@ -104,14 +105,13 @@ public class RoadScholar {
 
     PriorityQueue<Tuple<String, Integer>> sign = new PriorityQueue<Tuple<String, Integer>>(tupleComp);
     for (Tuple<String, Integer> city : cities) {
-      if (predMatrix[city.y][loc1] == (Integer) loc2) {
+      if (predMatrix[city.y][loc1] == (Integer) loc2 && city.y != loc1) {
         sign.add(new Tuple<String, Integer>(city.x, (int) Math.round(best[loc1][city.y])));
       }
     }
     for (Tuple<String, Integer> city : sign) {
       System.out.printf("%-20s%d\n", city.x, Math.round(((double) city.y - offset)));
     }
-    System.out.println();
   }
 }
 
