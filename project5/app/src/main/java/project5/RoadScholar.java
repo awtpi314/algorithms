@@ -9,103 +9,121 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class RoadScholar {
-    private static Tuple<String, Integer>[] cities;
-    private static double[][] best;
-    private static int numCities;
-    private static double[][] predMatrix;
+  private static Tuple<String, Integer>[] cities;
+  private static double[][] best;
+  private static int numCities;
+  private static double[][] predMatrix;
 
-    public static void main(String[] kargs) {
-        Scanner scanner = new Scanner(System.in);
-        int numIntersecs = scanner.nextInt();
-        int numRoads = scanner.nextInt();
-        numCities = scanner.nextInt();
-        double[][] adjMatrix = new double[numIntersecs][numIntersecs];
-        predMatrix = new double[numIntersecs][numIntersecs];
+  public static void main(String[] kargs) {
+    Scanner scanner = new Scanner(System.in);
+    int numIntersecs = scanner.nextInt();
+    int numRoads = scanner.nextInt();
+    numCities = scanner.nextInt();
+    double[][] adjMatrix = new double[numIntersecs][numIntersecs];
+    predMatrix = new double[numIntersecs][numIntersecs];
 
-        for (int i = 0; i < numRoads; i++) {
-            int loc1 = scanner.nextInt();
-            int loc2 = scanner.nextInt();
-            double dist = scanner.nextDouble();
-            adjMatrix[loc1][loc2] = dist;
-            adjMatrix[loc2][loc1] = dist;
-        }
-
-        @SuppressWarnings("unchecked")
-        Tuple<String, Integer>[] citiesArray = new Tuple[numCities];
-        cities = citiesArray;
-
-        for (int i = 0; i < numCities; i++) {
-            Integer loc = scanner.nextInt();
-            String nameHold = scanner.next();
-            cities[i] = new Tuple<String, Integer>(nameHold, loc);
-        }
-
-        best = floydWarshall(adjMatrix);
-
-        int numSigns = scanner.nextInt();
-        for (int i = 0; i < numSigns; i++) {
-            int loc1 = scanner.nextInt();
-            int loc2 = scanner.nextInt();
-            double offset = scanner.nextDouble();
-            print(loc1, loc2, offset);
-        }
-        scanner.close();
+    for (int i = 0; i < numIntersecs; i++) {
+      for (int j = 0; j < numIntersecs; j++) {
+        adjMatrix[i][j] = Double.POSITIVE_INFINITY;
+        predMatrix[i][j] = -1;
+      }
     }
 
-    private static double[][] floydWarshall(double[][] weight) {
-        int n = weight.length;
-        double[][] best = new double[n][n];
-        for (int i = 0; i < n; i++) {
-            best[i] = Arrays.copyOf(weight[i], weight[i].length);
-        }
-
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                for (int k = 0; k < n; k++) {
-                    if (best[j][k] > best[j][i] + best[i][k]) {
-                        best[j][k] = best[j][i] + best[i][k];
-                        predMatrix[j][k] = predMatrix[i][k];
-                    }
-                }
-            }
-        }
-
-        return best;
+    for (int i = 0; i < numRoads; i++) {
+      int loc1 = scanner.nextInt();
+      int loc2 = scanner.nextInt();
+      double dist = scanner.nextDouble();
+      adjMatrix[loc1][loc2] = dist;
+      adjMatrix[loc2][loc1] = dist;
     }
 
-    public static void print(int loc1, int loc2, double offset) {
-        Comparator<Tuple<String, Integer>> tupleComp = (t1, t2) -> {
-            int result = Integer.compare(t1.y, t2.y);
-            if (result == 0) {
-                result = t1.x.compareTo(t2.x);
-            }
-
-            return result;
-        };
-
-        PriorityQueue<Tuple<String, Integer>> sign = new PriorityQueue<Tuple<String, Integer>>(tupleComp);
-        for (Tuple<String, Integer> city : cities) {
-            if (predMatrix[loc1][city.y] == (Integer) loc2) {
-                sign.add(new Tuple<String, Integer>(city.x, (int)Math.round(best[loc1][city.y])));
-            }
+    for (int i = 0; i < predMatrix.length; i++) {
+      for (int j = 0; j < predMatrix[i].length; j++) {
+        if (adjMatrix[i][j] != Double.POSITIVE_INFINITY) {
+          predMatrix[i][j] = i;
+        } else {
+          predMatrix[i][j] = -1;
         }
-        for (Tuple<String, Integer> city : sign) {
-            System.out.printf("%-20s i", city.x, Math.round(((double) city.y - offset)));
-        }
+      }
     }
+
+    @SuppressWarnings("unchecked")
+    Tuple<String, Integer>[] citiesArray = new Tuple[numCities];
+    cities = citiesArray;
+
+    for (int i = 0; i < numCities; i++) {
+      Integer loc = scanner.nextInt();
+      String nameHold = scanner.next();
+      cities[i] = new Tuple<String, Integer>(nameHold, loc);
+    }
+
+    best = floydWarshall(adjMatrix);
+
+    int numSigns = scanner.nextInt();
+    for (int i = 0; i < numSigns; i++) {
+      int loc1 = scanner.nextInt();
+      int loc2 = scanner.nextInt();
+      double offset = scanner.nextDouble();
+      print(loc1, loc2, offset);
+    }
+    scanner.close();
+  }
+
+  private static double[][] floydWarshall(double[][] weight) {
+    int n = weight.length;
+    double[][] best = new double[n][n];
+    for (int i = 0; i < n; i++) {
+      best[i] = Arrays.copyOf(weight[i], weight[i].length);
+    }
+
+    for (int i = 0; i < n; i++) {
+      for (int j = 0; j < n; j++) {
+        for (int k = 0; k < n; k++) {
+          if (best[j][k] > best[j][i] + best[i][k]) {
+            best[j][k] = best[j][i] + best[i][k];
+            predMatrix[j][k] = predMatrix[i][k];
+          }
+        }
+      }
+    }
+
+    return best;
+  }
+
+  public static void print(int loc1, int loc2, double offset) {
+    Comparator<Tuple<String, Integer>> tupleComp = (t1, t2) -> {
+      int result = Integer.compare(t1.y, t2.y);
+      if (result == 0) {
+        result = t1.x.compareTo(t2.x);
+      }
+
+      return result;
+    };
+
+    PriorityQueue<Tuple<String, Integer>> sign = new PriorityQueue<Tuple<String, Integer>>(tupleComp);
+    for (Tuple<String, Integer> city : cities) {
+      if (predMatrix[loc1][city.y] == (Integer) loc2) {
+        sign.add(new Tuple<String, Integer>(city.x, (int) Math.round(best[loc1][city.y])));
+      }
+    }
+    for (Tuple<String, Integer> city : sign) {
+      System.out.printf("%-20s%d\n", city.x, Math.round(((double) city.y - offset)));
+    }
+    System.out.println();
+  }
 }
 
 class Tuple<T, U> {
-    public final T x;
-    public final U y;
+  public final T x;
+  public final U y;
 
-    Tuple(T x, U y) {
-        this.x = x;
-        this.y = y;
-    }
+  Tuple(T x, U y) {
+    this.x = x;
+    this.y = y;
+  }
 
-    public Tuple(Tuple<T, U> t) {
-        this.x = t.x;
-        this.y = t.y;
-    }
+  public Tuple(Tuple<T, U> t) {
+    this.x = t.x;
+    this.y = t.y;
+  }
 }
