@@ -9,9 +9,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public class RoadScholar {
+  // We hold the city names and their numbers in this array
   private static Tuple<String, Integer>[] cities;
+  // Our weight matrix for Floyd-Warshall
   private static double[][] best;
   private static int numCities;
+  // The predecessor matrix for so we can trace back the path
   private static int[][] predMatrix;
 
   public static void main(String[] kargs) {
@@ -22,6 +25,7 @@ public class RoadScholar {
     double[][] adjMatrix = new double[numIntersecs][numIntersecs];
     predMatrix = new int[numIntersecs][numIntersecs];
 
+    // Initialize the weight matrix to positive infinity
     for (int i = 0; i < numIntersecs; i++) {
       for (int j = 0; j < numIntersecs; j++) {
         adjMatrix[i][j] = Double.POSITIVE_INFINITY;
@@ -29,6 +33,7 @@ public class RoadScholar {
       }
     }
 
+    // Set the weight matrix to the values given
     for (int i = 0; i < numRoads; i++) {
       int loc1 = scanner.nextInt();
       int loc2 = scanner.nextInt();
@@ -37,6 +42,7 @@ public class RoadScholar {
       adjMatrix[loc2][loc1] = dist;
     }
 
+    // Initialize the predecessor matrix
     for (int i = 0; i < predMatrix.length; i++) {
       for (int j = 0; j < predMatrix[i].length; j++) {
         if (adjMatrix[i][j] != Double.POSITIVE_INFINITY) {
@@ -47,10 +53,12 @@ public class RoadScholar {
       }
     }
 
+    // Initialize the cities array
     @SuppressWarnings("unchecked")
     Tuple<String, Integer>[] citiesArray = new Tuple[numCities];
     cities = citiesArray;
 
+    // Initialize the cities array with the city names and their numbers
     for (int i = 0; i < numCities; i++) {
       Integer loc = scanner.nextInt();
       String nameHold = scanner.next();
@@ -59,6 +67,7 @@ public class RoadScholar {
 
     best = floydWarshall(adjMatrix);
 
+    // Get the number of signs and print the signs
     int numSigns = scanner.nextInt();
     for (int i = 0; i < numSigns; i++) {
       int loc1 = scanner.nextInt();
@@ -72,6 +81,14 @@ public class RoadScholar {
     scanner.close();
   }
 
+  /**
+   * Floyd-Warshall algorithm to find the shortest path between all pairs of
+   * vertices. We also keep track of the predecessor matrix so we can trace back
+   * the path and print the signs.
+   * 
+   * @param weight The weight matrix
+   * @return The best path matrix
+   */
   private static double[][] floydWarshall(double[][] weight) {
     int n = weight.length;
     double[][] best = new double[n][n];
@@ -93,7 +110,15 @@ public class RoadScholar {
     return best;
   }
 
+  /**
+   * Prints the signs for the given location and offset.
+   * 
+   * @param loc1   The first city
+   * @param loc2   The second city
+   * @param offset How far away the sign is
+   */
   public static void print(int loc1, int loc2, double offset) {
+    // Custom comparator to sort the cities by their distance and then by their name
     Comparator<Tuple<String, Integer>> tupleComp = (t1, t2) -> {
       int result = Integer.compare(t1.y, t2.y);
       if (result == 0) {
@@ -103,12 +128,14 @@ public class RoadScholar {
       return result;
     };
 
+    // Priority queue to hold the cities that are on the path
     PriorityQueue<Tuple<String, Integer>> sign = new PriorityQueue<Tuple<String, Integer>>(tupleComp);
     for (Tuple<String, Integer> city : cities) {
       if (predMatrix[city.y][loc1] == (Integer) loc2 && city.y != loc1) {
         sign.add(new Tuple<String, Integer>(city.x, (int) Math.round(best[loc1][city.y])));
       }
     }
+    // Print the signs as they come off of the priority queue
     while (!sign.isEmpty()) {
       Tuple<String, Integer> city = sign.poll();
       System.out.printf("%-20s%d\n", city.x, Math.round(((double) city.y - offset)));
@@ -116,6 +143,10 @@ public class RoadScholar {
   }
 }
 
+/**
+ * Tuple class to hold two values.
+ * We use this in our city array to hold index and name.
+ */
 class Tuple<T, U> {
   public final T x;
   public final U y;
