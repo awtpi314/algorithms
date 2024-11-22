@@ -30,17 +30,20 @@ public class RoadScholar {
             adjMatrix[loc2][loc1] = dist;
         }
 
-        cities = (Tuple<String, Integer>[]) new Tuple[numCities];
+        @SuppressWarnings("unchecked")
+        Tuple<String, Integer>[] citiesArray = new Tuple[numCities];
+        cities = citiesArray;
 
         for (int i = 0; i < numCities; i++) {
             Integer loc = scanner.nextInt();
             String nameHold = scanner.next();
-            cities[i] = new Tuple(nameHold, loc);
+            cities[i] = new Tuple<String, Integer>(nameHold, loc);
         }
 
-        best = FloydWarshall(adjMatrix);
+        best = floydWarshall(adjMatrix);
 
-        for (int i = 0; i < scanner.nextInt(); i++) {
+        int numSigns = scanner.nextInt();
+        for (int i = 0; i < numSigns; i++) {
             int loc1 = scanner.nextInt();
             int loc2 = scanner.nextInt();
             double offset = scanner.nextDouble();
@@ -49,7 +52,7 @@ public class RoadScholar {
         scanner.close();
     }
 
-    private static double[][] FloydWarshall(double[][] weight) {
+    private static double[][] floydWarshall(double[][] weight) {
         int n = weight.length;
         double[][] best = new double[n][n];
         for (int i = 0; i < n; i++) {
@@ -83,7 +86,7 @@ public class RoadScholar {
         PriorityQueue<Tuple<String, Integer>> sign = new PriorityQueue<Tuple<String, Integer>>(tupleComp);
         for (Tuple<String, Integer> city : cities) {
             if (predMatrix[loc1][city.y] == (Integer) loc2) {
-                sign.add(new Tuple(city.y, best[loc1][city.y]));
+                sign.add(new Tuple<String, Integer>(city.x, (int)Math.round(best[loc1][city.y])));
             }
         }
         for (Tuple<String, Integer> city : sign) {
